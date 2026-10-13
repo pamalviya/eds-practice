@@ -1,0 +1,38 @@
+{
+  "definitions": [
+    {
+      "title": "Page",
+      "id": "page",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/page/v1/page",
+            "template": {
+              "name": "Page",
+              "model": "page"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "page",
+      "fields": [
+        {
+          "component": "text-input",
+          "name": "jcr:title",
+          "label": "Page title",
+          "valueType": "string"
+        },
+        {
+          "component": "text-input",
+          "name": "navTitle",
+          "label": "Navigation title",
+          "valueType": "string"
+        }
+      ]
+    }
+  ]
+}

@@ -1,5 +1,5 @@
 function decorateAccordion(el) {
-    alert("accordion");
+   // alert("accordion");
   const titles = el.querySelectorAll(':scope > div:nth-child(odd)');
   titles.forEach((title) => {
     // Add a class to the title container

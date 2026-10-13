@@ -1,0 +1,42 @@
+{
+  "definitions": [
+    {
+      "title": "Simple Text",
+      "id": "simple-text",
+      "model": "simple-text",
+      "plugins": {
+        "da": {
+          "rows": 1,
+          "columns": 1,
+          "fields": [
+            {
+              "name": "text",
+              "selector": ":scope"
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "simple-text",
+      "fields": [
+        {
+          "component": "text",
+          "name": "text",
+          "label": "Text",
+          "valueType": "string"
+        }
+      ]
+    }
+  ],
+  "filters": [
+    {
+      "id": "section",
+      "components": [
+        "simple-text"
+      ]
+    }
+  ]
+}

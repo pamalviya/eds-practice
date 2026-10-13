@@ -1,0 +1,58 @@
+{
+  "definitions": [
+    {
+      "title": "Section",
+      "id": "section",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/section/v1/section",
+            "template": {
+              "name": "Section",
+              "model": "section"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "section",
+      "fields": [
+        {
+          "component": "text-input",
+          "name": "title",
+          "label": "Section title",
+          "valueType": "string"
+        },
+        {
+          "component": "select",
+          "name": "style",
+          "label": "Style",
+          "valueType": "string",
+          "options": [
+            { "name": "Default", "value": "default" },
+            { "name": "Highlight", "value": "highlight" },
+            { "name": "Full width", "value": "full-width" }
+          ]
+        }
+      ]
+    }
+  ],
+  "filters": [
+    {
+      "id": "section",
+      "components": [
+        "text",
+        "image",
+        "hero",
+        "cards",
+        "columns",
+        "accordion",
+        "fragment",
+        "widget"
+      ]
+    }
+  ]
+}

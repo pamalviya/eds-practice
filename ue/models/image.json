@@ -1,0 +1,44 @@
+{
+  "definitions": [
+    {
+      "title": "Image",
+      "id": "image",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/image/v1/image",
+            "template": {
+              "name": "Image",
+              "model": "image"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "image",
+      "fields": [
+        {
+          "component": "reference",
+          "name": "fileReference",
+          "label": "Image",
+          "valueType": "string"
+        },
+        {
+          "component": "text-input",
+          "name": "alt",
+          "label": "Alt text",
+          "valueType": "string"
+        },
+        {
+          "component": "text-input",
+          "name": "title",
+          "label": "Title",
+          "valueType": "string"
+        }
+      ]
+    }
+  ]
+}

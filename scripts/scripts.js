@@ -88,7 +88,8 @@ function buildAutoBlocks(main) {
           try {
             const { pathname } = new URL(fragment.href);
             const frag = await loadFragment(pathname);
-            fragment.parentElement.replaceWith(...frag.children);
+            if (!frag || !frag.children.length) return;
+            fragment.parentElement?.replaceWith(...frag.children);
           } catch (error) {
             // eslint-disable-next-line no-console
             console.error('Fragment loading failed', error);
@@ -111,6 +112,7 @@ function decorateButtons(main) {
   main.querySelectorAll('p a[href]').forEach((a) => {
     a.title = a.title || a.textContent;
     const p = a.closest('p');
+    if (!p) return;
     const text = a.textContent.trim();
 
     // quick structural checks
@@ -118,7 +120,9 @@ function decorateButtons(main) {
 
     // skip URL display links
     try {
-      if (new URL(a.href).href === new URL(text, window.location).href) return;
+      const href = new URL(a.href, window.location);
+      const displayUrl = new URL(text, window.location);
+      if (href.href === displayUrl.href) return;
     } catch { /* continue */ }
 
     // require authored formatting for buttonization
@@ -166,7 +170,10 @@ async function loadEager(doc) {
   if (main) {
     decorateMain(main);
     document.body.classList.add('appear');
-    await loadSection(main.querySelector('.section'), waitForFirstImage);
+    const firstSection = main.querySelector('.section');
+    if (firstSection) {
+      await loadSection(firstSection, waitForFirstImage);
+    }
   }
 
   try {
@@ -184,16 +191,24 @@ async function loadEager(doc) {
  * @param {Element} doc The container element
  */
 async function loadLazy(doc) {
-  loadHeader(doc.querySelector('body > header'));
+  const header = doc.querySelector('body > header');
+  if (header) {
+    loadHeader(header);
+  }
 
   const main = doc.querySelector('main');
-  await loadSections(main);
+  if (main) {
+    await loadSections(main);
 
-  const { hash } = window.location;
-  const element = hash ? doc.getElementById(hash.substring(1)) : false;
-  if (hash && element) element.scrollIntoView();
+    const { hash } = window.location;
+    const element = hash ? doc.getElementById(hash.substring(1)) : false;
+    if (hash && element) element.scrollIntoView();
+  }
 
-  loadFooter(doc.querySelector('body > footer'));
+  const footer = doc.querySelector('body > footer');
+  if (footer) {
+    loadFooter(footer);
+  }
 
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
   loadFonts();

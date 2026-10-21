@@ -1,0 +1,11 @@
+{
+  "plugins": [
+    {
+      "id": "library",
+      "title": "Block Library",
+      "url": "https://main--eds-practice--pamalviya.aem.page/docs/library/blocks.json",
+      "isPalette": true,
+      "paletteRect": "top: 0; bottom: 0; right: 0; width: 400px;"
+    }
+  ]
+}

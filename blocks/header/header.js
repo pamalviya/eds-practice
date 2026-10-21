@@ -11,6 +11,7 @@ const isDesktop = window.matchMedia('(min-width: 900px)');
 function closeOnEscape(e) {
   if (e.code === 'Escape') {
     const nav = document.getElementById('nav');
+    if (!nav) return;
     const navSections = nav.querySelector('.nav-sections');
     if (!navSections) return;
     const navSectionExpanded = navSections.querySelector('[aria-expanded="true"]');
@@ -21,7 +22,7 @@ function closeOnEscape(e) {
     } else if (!isDesktop.matches) {
       // eslint-disable-next-line no-use-before-define
       toggleMenu(nav, navSections);
-      nav.querySelector('button').focus();
+      nav.querySelector('button')?.focus();
     }
   }
 }
@@ -72,7 +73,9 @@ function toggleMenu(nav, navSections, forceExpanded = null) {
   if (isDesktop.matches) nav.removeAttribute('aria-expanded');
   else nav.setAttribute('aria-expanded', expanded ? 'false' : 'true');
   toggleAllNavSections(navSections, expanded || isDesktop.matches ? 'false' : 'true');
-  button.setAttribute('aria-label', expanded ? 'Open navigation' : 'Close navigation');
+  if (button) {
+    button.setAttribute('aria-label', expanded ? 'Open navigation' : 'Close navigation');
+  }
 
   // enable menu collapse on escape keypress
   if (!expanded || isDesktop.matches) {
@@ -95,6 +98,7 @@ export default async function decorate(block) {
   const navMeta = getMetadata('nav');
   const navPath = navMeta ? new URL(navMeta, window.location).pathname : '/nav';
   const fragment = await loadFragment(navPath);
+  if (!fragment || !fragment.firstElementChild) return;
 
   // decorate nav DOM
   block.textContent = '';
@@ -109,10 +113,12 @@ export default async function decorate(block) {
   });
 
   const navBrand = nav.querySelector('.nav-brand');
-  const brandLink = navBrand.querySelector('.button');
-  if (brandLink) {
-    brandLink.className = '';
-    brandLink.closest('.button-container').className = '';
+  if (navBrand) {
+    const brandLink = navBrand.querySelector('.button');
+    if (brandLink) {
+      brandLink.className = '';
+      brandLink.closest('.button-container')?.classList.remove('button-container');
+    }
   }
 
   const navSections = nav.querySelector('.nav-sections');

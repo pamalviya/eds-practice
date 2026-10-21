@@ -1,45 +1,39 @@
-/*
- * Fragment Block
- * Include content on a page as a fragment.
- * https://www.aem.live/developer/block-collection/fragment
- */
-
-// eslint-disable-next-line import/no-cycle
-import {
-  decorateMain,
-} from '../../scripts/scripts.js';
-
-import {
-  loadSections,
-} from '../../scripts/aem.js';
-
-/**
- * Loads a fragment.
- * @param {string} path The path to the fragment
- * @returns {HTMLElement} The root element of the fragment
- */
 export async function loadFragment(path) {
-  if (path && path.startsWith('/') && !path.startsWith('//')) {
-    const resp = await fetch(`${path}.plain.html`);
-    if (resp.ok) {
-      const main = document.createElement('main');
-      main.innerHTML = await resp.text();
+  if (!path) return null;
 
-      // reset base path for media to fragment base
-      const resetAttributeBase = (tag, attr) => {
-        main.querySelectorAll(`${tag}[${attr}^="./media_"]`).forEach((elem) => {
-          elem[attr] = new URL(elem.getAttribute(attr), new URL(path, window.location)).href;
-        });
-      };
-      resetAttributeBase('img', 'src');
-      resetAttributeBase('source', 'srcset');
-
-      decorateMain(main);
-      await loadSections(main);
-      return main;
+  let fragmentPath = path;
+  try {
+    const url = new URL(path, window.location.href);
+    if (url.origin !== window.location.origin) {
+      return null;
     }
+    fragmentPath = url.pathname;
+  } catch (error) {
+    // ignore invalid URLs and fall back to the provided path
   }
-  return null;
+
+  if (!fragmentPath.startsWith('/') || fragmentPath.startsWith('//')) {
+    return null;
+  }
+
+  const resp = await fetch(`${fragmentPath}.plain.html`);
+  if (!resp.ok) {
+    return null;
+  }
+
+  const main = document.createElement('main');
+  main.innerHTML = await resp.text();
+
+  // reset base path for media to fragment base
+  const resetAttributeBase = (tag, attr) => {
+    main.querySelectorAll(`${tag}[${attr}^="./media_"]`).forEach((elem) => {
+      elem[attr] = new URL(elem.getAttribute(attr), new URL(fragmentPath, window.location)).href;
+    });
+  };
+  resetAttributeBase('img', 'src');
+  resetAttributeBase('source', 'srcset');
+
+  return main;
 }
 
 export default async function decorate(block) {
@@ -49,6 +43,8 @@ export default async function decorate(block) {
   if (!fragment) return;
 
   const wrapper = block.closest('.fragment-wrapper');
+  if (!wrapper) return;
+
   const section = wrapper.closest('.section');
 
   if (section && section.children.length === 1) {

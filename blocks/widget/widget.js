@@ -57,13 +57,25 @@ function applyWidgetShell(widget, source, widgetName, searchParams) {
  */
 export default async function decorate(widget) {
   const source = widget.querySelector('a[href]');
-  const { pathname, searchParams } = new URL(source.href);
+  if (!source) return;
+
+  let url;
+  try {
+    url = new URL(source.href);
+  } catch (error) {
+    return;
+  }
+
+  const { pathname, searchParams } = url;
   const { widgetPath, widgetName } = parseWidgetHref(pathname);
 
   try {
     applyWidgetShell(widget, source, widgetName, searchParams);
 
     const resp = await fetch(widgetUrl(widgetPath, widgetName, 'html'));
+    if (!resp.ok) {
+      return;
+    }
     widget.innerHTML = await resp.text();
 
     const cssLoaded = loadCSS(widgetUrl(widgetPath, widgetName, 'css'));
